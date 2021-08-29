@@ -1,0 +1,77 @@
+<div class="dynamic-input" [formGroup]="group">
+    <mat-form-field *ngIf="!config.hasOwnProperty('isRequired')"
+      appearance="outline"
+      floatLabel="never"
+      style="width:100%"
+    >
+      <mat-label> {{ config?.label }}</mat-label>
+      <input
+        matInput
+        type="text"
+        [attr.placeholder]="config.placeholder"
+        [formControlName]="config.genericName"
+        maxlength="3"
+        (focus)="emitFocus('onFocus')"
+        (focusout)="emitFocus('onFocusOut')"
+      />
+      <mat-error
+        *ngIf="
+          'form.get(' +
+            group +
+            ').get(' +
+            config.genericName +
+            ').errors.required' &&
+          'form.get(' +
+            group +
+            ').get(' +
+            config.genericName +
+            ').errors.pattern' &&
+          'form.get(' +
+            group +
+            ').get(' +
+            config.genericName +
+            ').errors.touched'
+        "
+      >
+        {{config?.label}}
+      </mat-error>
+    </mat-form-field>
+          <mat-form-field  *ngIf="config.hasOwnProperty('isRequired')"
+      appearance="outline"
+      floatLabel="never"
+      style="width:100%"
+    >
+      <mat-label> {{ config.label }}</mat-label>
+      <input
+        matInput
+        type="text"
+        [attr.placeholder]="config.placeholder"
+        [formControlName]="config.genericName"
+        maxlength="3"
+        [required]="config.isRequired"
+        (focus)="emitFocus('onFocus')"
+        (focusout)="emitFocus('onFocusOut')"
+      />
+      <mat-error
+        *ngIf="
+          'form.get(' +
+            group +
+            ').get(' +
+            config.genericName +
+            ').errors.required' &&
+          'form.get(' +
+            group +
+            ').get(' +
+            config.genericName +
+            ').errors.pattern' &&
+          'form.get(' +
+            group +
+            ').get(' +
+            config.genericName +
+            ').errors.touched'
+        "
+      >
+        {{config?.label}}
+      </mat-error>
+    </mat-form-field>
+  </div>
