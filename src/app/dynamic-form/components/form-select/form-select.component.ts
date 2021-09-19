@@ -6,7 +6,6 @@ import { FieldConfig } from '../../models/field-config.interface';
 
 @Component({
   selector: 'form-select',
-  styleUrls: ['form-select.component.scss'],
   templateUrl: 'form-select.component.html'
 })
 export class FormSelectComponent implements Field, OnInit {

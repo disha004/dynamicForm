@@ -1,16 +1,19 @@
 
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 
 import { FieldConfig } from '../../models/field-config.interface';
+import {take} from 'rxjs/operators'
+
 
 @Component({
   exportAs: 'dynamicForm',
   selector: 'dynamic-form',
   styleUrls: ['dynamic-form.component.scss'],
-  templateUrl:'dynamic-form.component.html'
+  templateUrl:'dynamic-form.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DynamicFormComponent implements OnChanges, OnInit {
+export class DynamicFormComponent implements OnInit {
   @Input()
   config: FieldConfig[] = [];
 
@@ -20,9 +23,8 @@ export class DynamicFormComponent implements OnChanges, OnInit {
   form!: FormGroup; 
 
   get controls() {
-    return this.config && this.config.filter(({ type }) => type !== 'button');
+    return this.config;
   }
-  get changes() { return this.form.valueChanges; }
   get valid() { return this.form.valid; }
   get value() { return this.form.value; }
 
@@ -30,55 +32,39 @@ export class DynamicFormComponent implements OnChanges, OnInit {
 
   ngOnInit() {
     this.form = this.createGroup();
+    for(const [key, value] of Object.entries(this.form.controls)) {
+        this.getErrorMessage(value as FormControl, this.config.filter(c => c.name === key)[0])
+    }
+
+    this.form.statusChanges
+    .subscribe((val) => {
+      if(val === "INVALID")
+      for(const [key, value] of Object.entries(this.form.controls)) {
+        this.getErrorMessage(value as FormControl, this.config.filter(c => c.name === key)[0])
+    }
+    });
   }
 
-  ngOnChanges() {
-    this.form = this.createGroup();
-    if (this.form) {
-      const controls = Object.keys(this.form.controls);
-      const configControls = this.controls && this.controls.map((item: any) => item.genericName);
-      controls
-        .filter((control) => !configControls.includes(control))
-        .forEach((control) => this.form.removeControl(control));
-      configControls && configControls
-        .filter((control) => !controls.includes(control))
-        .forEach((name) => {
-          let config: FieldConfig | undefined
-          config = this.config.find((control: any) => control.genericName === name);
-          this.form.addControl(name, this.createControl(config));
-        });
-    }
-  }
+
 
   createGroup() {
     const group = this.fb.group({});
     this.controls?.forEach((control: any) => 
-        group.addControl(control.genericName, this.createControl(control))
+        group.addControl(control.name, this.createControl(control))
     )
     return group;
   }
 
   createControl(config: FieldConfig | undefined) {
     if(!config) return this.fb.control({})
-    const { disabled, validation, value } = config;
-    if (config.hasOwnProperty('isRequired') && config['isRequired']) {
-      if (config.type === 'number')
-        return this.fb.control({ disabled, value }, [Validators.pattern("^[0-9]*$")])
-      if (config.type === 'static')
-        return this.fb.control(value)
-      return this.fb.control({ disabled, value });
-    } else {
-      if (config.type === 'number')
-        return this.fb.control({ disabled, value }, [Validators.required, Validators.pattern("^[0-9]*$")])
-      if (config.type === 'static')
-        return this.fb.control(value)
-      return this.fb.control({ disabled, value }, [Validators.required])
-    }
+    const { disabled, validators, value } = config;
+      return this.fb.control({ disabled, value }, this.getValidators(validators))
   }
 
   handleSubmit(event: Event) {
     event.preventDefault();
     event.stopPropagation();
+    console.log('this.value:', this.value)
     this.submit.emit(this.value);
   }
 
@@ -100,4 +86,66 @@ export class DynamicFormComponent implements OnChanges, OnInit {
   setValue(name: string, value: any) {
     this.form.controls[name].setValue(value, { emitEvent: true });
   }
+
+  getValidators(validator: object) {
+    const validators = []
+      for(const[key, value] of Object.entries(validator)) {
+          switch(key) {
+            case 'required': 
+              if(value) {
+                validators.push(Validators.required)
+              }
+              break;
+            case 'minLength': 
+              validators.push(Validators.minLength(value))
+              break;
+            case 'maxLength': 
+              validators.push(Validators.maxLength(value))
+              break;
+            case 'min': 
+              validators.push(Validators.min(value))
+              break;
+            case 'max': 
+              validators.push(Validators.max(value))
+              break;
+            case 'email': 
+            if(value) {
+              validators.push(Validators.email)
+            }
+                
+          }
+      }
+      return validators
+  }
+
+
+  getErrorMessage(control: FormControl, config: any) {
+    console.log('control:', control)
+    if(control?.hasError('required')) {
+      config.errors?.push('You must enter a value')
+    }
+    if(control?.hasError('minlength')) {
+      config.errors?.push(`It must have minimum ${config?.validators['minLength']} characters`)
+    }
+
+    if(control?.hasError('maxlength')) {
+      config.errors?.push(`It must have maximum ${config?.validators['minLength']} characters`)
+    }
+
+    if(control?.hasError('email')) {
+      config.errors?.push(`It must be valid email`)
+    }
+
+    if(control?.hasError('max')) {
+      config.errors?.push(`It must be number smaller then ${config?.validators.max}`)
+    }
+
+    if(control?.hasError('min')) {
+      config.errors?.push(`It must be number bigger then ${config?.validators.min}`)
+    }
+
+  }
+
+
 }
+

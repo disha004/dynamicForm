@@ -1,24 +1,11 @@
-  <div  *ngIf="!config?.hasOwnProperty('isRequired')" class="dynamic-input" [formGroup]="group">
+  <div class="dynamic-input" [formGroup]="group">
     <mat-form-field>
       <mat-label> {{ config?.label }}</mat-label>
       <mat-select (focus)="emitFocus('onFocus')" (focusout)="emitFocus('onFocusOut')" 
-      [formControlName]="config?.genericName!" [compareWith]="compareFn" required>
-        <mat-option *ngFor="let option of config?.options" [value]=" option ">
+      [formControlName]="config?.name!" [compareWith]="compareFn">
+        <mat-option *ngFor="let option of config?.options" [value]="option">
           {{option}}
         </mat-option>
       </mat-select>
     </mat-form-field>
-  </div>
-
-  <div *ngIf="config?.hasOwnProperty('isRequired')" class="dynamic-input" [formGroup]="group">
-    <mat-form-field>
-
-    <mat-label> {{ config.label }}</mat-label>
-    <mat-select (focus)="emitFocus('onFocus')" (focusout)="emitFocus('onFocusOut')" 
-    [formControlName]="config?.genericName!" [compareWith]="compareFn" required>
-      <mat-option *ngFor="let option of config?.options" [value]=" option">
-        {{option}}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
   </div>

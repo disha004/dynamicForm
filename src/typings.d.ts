@@ -1,0 +1,1 @@
+declare var configData:any;

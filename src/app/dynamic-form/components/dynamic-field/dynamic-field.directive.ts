@@ -1,21 +1,14 @@
 import { ComponentFactoryResolver, ComponentRef, Directive, Input, OnChanges, OnInit, Type, ViewContainerRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-
-import { FormButtonComponent } from '../form-button/form-button.component';
 import { FormInputComponent } from '../form-input/form-input.component';
 import { FormSelectComponent } from '../form-select/form-select.component';
 
 import { Field } from '../../models/field.interface';
 import { FieldConfig } from '../../models/field-config.interface';
-import { FormInputNumberComponent } from '../form-number/form-number.component';
-import { FormStaticComponent } from '../form-static/form-static.component';
 
 const components: { [type: string]: Type<Field> } = {
-  button!: FormButtonComponent,
-  input!: FormInputComponent,
-  select!: FormSelectComponent,
-  number!: FormInputNumberComponent,
-  static!: FormStaticComponent
+    input!: FormInputComponent,
+  select!: FormSelectComponent
 };
 
 @Directive({
@@ -44,14 +37,14 @@ export class DynamicFieldDirective implements Field, OnChanges, OnInit {
 
 
   ngOnInit() {
-    if (!components[this.config.type]) {
+    if (!components[this.config.element]) {
       const supportedTypes = Object.keys(components).join(', ');
       throw new Error(
-        `Trying to use an unsupported type (${this.config.type}).
+        `Trying to use an unsupported type (${this.config.element}).
         Supported types: ${supportedTypes}`
       );
     }
-    const singleComponent = this.resolver.resolveComponentFactory<Field>(components[this.config.type]);
+    const singleComponent = this.resolver.resolveComponentFactory<Field>(components[this.config.element]);
     this.component = this.container.createComponent(singleComponent);
     this.component.instance.config = this.config;
     this.component.instance.group = this.group;

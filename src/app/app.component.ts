@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import * as data from '../assets/data.json'
+
 
 @Component({
   selector: 'app-root',
@@ -7,11 +8,7 @@ import { FormGroup } from '@angular/forms';
   styleUrls: ['./app.component.scss']
 })
 
-
-
-
 export class AppComponent {
-  detailsForm!: []
-
+  detailsForm: any = (data as any).default;
   title = 'dynamicForm';
 }
