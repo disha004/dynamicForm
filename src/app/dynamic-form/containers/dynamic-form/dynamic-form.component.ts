@@ -32,15 +32,22 @@ export class DynamicFormComponent implements OnInit {
 
   ngOnInit() {
     this.form = this.createGroup();
-    for(const [key, value] of Object.entries(this.form.controls)) {
-        this.getErrorMessage(value as FormControl, this.config.filter(c => c.name === key)[0])
-    }
-
+    // for(const [key, value] of Object.entries(this.form.controls)) {
+    //   console.log('key, value:', key, value)
+    //   this.form.get(`${key}`)?.statusChanges.pipe(take(1)).subscribe(val => {
+    //     if(val === 'INVALID') {
+    //       console.log('val:',val)
+    //       this.getErrorMessage(value as FormControl, this.config.filter(c => c.name === key)[0])
+    //     }
+    //   })
+    // }
     this.form.statusChanges
     .subscribe((val) => {
       if(val === "INVALID")
       for(const [key, value] of Object.entries(this.form.controls)) {
-        this.getErrorMessage(value as FormControl, this.config.filter(c => c.name === key)[0])
+        if(value.status === 'INVALID') {
+          this.getErrorMessage(value as FormControl, this.config.filter(c => c.name === key)[0])
+        }
     }
     });
   }
@@ -64,7 +71,6 @@ export class DynamicFormComponent implements OnInit {
   handleSubmit(event: Event) {
     event.preventDefault();
     event.stopPropagation();
-    console.log('this.value:', this.value)
     this.submit.emit(this.value);
   }
 
@@ -120,30 +126,48 @@ export class DynamicFormComponent implements OnInit {
 
 
   getErrorMessage(control: FormControl, config: any) {
-    console.log('control:', control)
+    let message = ""
     if(control?.hasError('required')) {
-      config.errors?.push('You must enter a value')
+      message = 'You must enter a value'
+      if(config?.errors && config.errors.filter(((item: any) => item[config.name] === message)).length === 0) {
+        config.errors.push({[config.name]:message})
+      }  
     }
+
     if(control?.hasError('minlength')) {
-      config.errors?.push(`It must have minimum ${config?.validators['minLength']} characters`)
+      message = `It must have minimum ${config?.validators['minLength']} characters`
+      if(config?.errors && config.errors.filter(((item: any) => item[config.name] === message)).length === 0) {
+        config.errors.push({[config.name]:message})
+      }  
     }
 
     if(control?.hasError('maxlength')) {
-      config.errors?.push(`It must have maximum ${config?.validators['minLength']} characters`)
+      message = `It must have maximum ${config?.validators['minLength']} characters`
+      if(config?.errors && config.errors.filter(((item: any) => item[config.name] === message)).length === 0) {
+        config.errors.push({[config.name]:message})
+      } 
     }
 
     if(control?.hasError('email')) {
-      config.errors?.push(`It must be valid email`)
+      message = `It must be valid email`
+      if(config?.errors && config.errors.filter(((item: any) => item[config.name] === message)).length === 0) {
+        config.errors.push({[config.name]:message})
+      } 
     }
 
     if(control?.hasError('max')) {
-      config.errors?.push(`It must be number smaller then ${config?.validators.max}`)
+      message = `It must be number smaller then ${config?.validators.max}`
+      if(config?.errors && config.errors.filter(((item: any) => item[config.name] === message)).length === 0) {
+        config.errors.push({[config.name]:message})
+      } 
     }
 
     if(control?.hasError('min')) {
-      config.errors?.push(`It must be number bigger then ${config?.validators.min}`)
+      message = `It must be number bigger then ${config?.validators.min}`
+      if(config?.errors && config.errors.filter(((item: any) => item[config.name] === message)).length === 0) {
+        config.errors.push({[config.name]:message})
+      } 
     }
-
   }
 
 

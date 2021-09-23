@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import * as data from '../assets/data.json'
 
-
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -9,6 +8,7 @@ import * as data from '../assets/data.json'
 })
 
 export class AppComponent {
+
   detailsForm: any = (data as any).default;
   title = 'dynamicForm';
 }

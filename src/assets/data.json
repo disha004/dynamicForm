@@ -21,7 +21,7 @@
         "placeholder": "field2",
         "label": "field2",
         "type": "number",
-        "errors":[],
+        "errors": [],
         "value":"5",
         "element": "input",
         "validators":{

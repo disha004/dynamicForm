@@ -14,7 +14,7 @@ import { DynamicFormModule } from './dynamic-form/dynamic-form.module';
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
-    DynamicFormModule
+    DynamicFormModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

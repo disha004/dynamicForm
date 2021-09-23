@@ -4,7 +4,7 @@ export interface FieldConfig {
   name: string,
   options?: string[],
   placeholder?: string,
-  errors?:string[],
+  errors?: Array<any>,
   type: 'text' | 'number' | 'select' | 'email' | 'textarea' | 'password',
   element: 'input' | 'select' | 'button' | 'textarea',
   value?: any,

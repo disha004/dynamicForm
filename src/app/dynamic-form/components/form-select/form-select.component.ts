@@ -8,7 +8,7 @@ import { FieldConfig } from '../../models/field-config.interface';
   selector: 'form-select',
   templateUrl: 'form-select.component.html'
 })
-export class FormSelectComponent implements Field, OnInit {
+export class FormSelectComponent implements Field {
   config!: FieldConfig;
   group!: FormGroup;
 
@@ -18,12 +18,5 @@ export class FormSelectComponent implements Field, OnInit {
     return f2 && true;
   }
 
-  emitFocus(focusType: any) {
-    // this.cardService.onFieldFocus(focusType);
-  }
-
-  ngOnInit() {
-    // console.log('config in select:', this.config)
-  }
 
 }

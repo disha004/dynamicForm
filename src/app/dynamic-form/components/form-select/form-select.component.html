@@ -1,11 +1,16 @@
-  <div class="dynamic-input" [formGroup]="group">
+  <div [formGroup]="group">
     <mat-form-field>
       <mat-label> {{ config?.label }}</mat-label>
-      <mat-select (focus)="emitFocus('onFocus')" (focusout)="emitFocus('onFocusOut')" 
+      <mat-select 
       [formControlName]="config?.name!" [compareWith]="compareFn">
         <mat-option *ngFor="let option of config?.options" [value]="option">
           {{option}}
         </mat-option>
       </mat-select>
+      <mat-error>
+        <div *ngFor="let err of config.errors">
+          <p>{{err[config.name]}}</p> 
+        </div>
+       </mat-error>
     </mat-form-field>
   </div>
