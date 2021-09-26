@@ -10,5 +10,4 @@ import * as data from '../assets/data.json'
 export class AppComponent {
 
   detailsForm: any = (data as any).default;
-  title = 'dynamicForm';
 }

@@ -8,7 +8,7 @@ import { FieldConfig } from '../../models/field-config.interface';
 
 const components: { [type: string]: Type<Field> } = {
     input!: FormInputComponent,
-  select!: FormSelectComponent
+    select!: FormSelectComponent
 };
 
 @Directive({

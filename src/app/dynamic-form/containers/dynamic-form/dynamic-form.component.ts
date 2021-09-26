@@ -3,7 +3,6 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 
 import { FieldConfig } from '../../models/field-config.interface';
-import {take} from 'rxjs/operators'
 
 
 @Component({
@@ -32,15 +31,6 @@ export class DynamicFormComponent implements OnInit {
 
   ngOnInit() {
     this.form = this.createGroup();
-    // for(const [key, value] of Object.entries(this.form.controls)) {
-    //   console.log('key, value:', key, value)
-    //   this.form.get(`${key}`)?.statusChanges.pipe(take(1)).subscribe(val => {
-    //     if(val === 'INVALID') {
-    //       console.log('val:',val)
-    //       this.getErrorMessage(value as FormControl, this.config.filter(c => c.name === key)[0])
-    //     }
-    //   })
-    // }
     this.form.statusChanges
     .subscribe((val) => {
       if(val === "INVALID")
